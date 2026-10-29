@@ -1,4 +1,5 @@
 /* ─── Scroll Progress Bar ─────────────────────────────────────────── */
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const progressBar = document.createElement('div');
 progressBar.id = 'scroll-progress';
 document.body.prepend(progressBar);
@@ -30,7 +31,7 @@ const revealObserver = new IntersectionObserver((entries, obs) => {
     const el = entry.target;
     const idx = el.dataset.revealIndex ? Number(el.dataset.revealIndex) : 0;
     // Cap delay at 400ms for large grids
-    const delay = Math.min(idx * 80, 400);
+    const delay = Math.min(idx * 70, 280);
     el.style.setProperty('--reveal-delay', `${delay}ms`);
     // Small stagger: slight Y offset per card for depth
     el.style.setProperty('--reveal-distance', `${20 + idx * 4}px`);
@@ -56,7 +57,7 @@ navLinks.forEach(link => {
     if (!target) return;
     // Offset for sticky header (72px)
     const top = target.getBoundingClientRect().top + window.scrollY - 80;
-    window.scrollTo({ top, behavior: 'smooth' });
+    window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     history.replaceState(null, '', href);
   });
 });
@@ -135,7 +136,7 @@ if (form) {
       firstInvalid = firstInvalid || form.elements.email;
     }
     if (!fields.message) {
-      document.getElementById('message-error').textContent = 'Veuillez ecrire un message.';
+      document.getElementById('message-error').textContent = 'Veuillez écrire un message.';
       firstInvalid = firstInvalid || form.elements.message;
     }
 
@@ -143,7 +144,7 @@ if (form) {
 
     if (form.elements._honey.value) {
       status.className = 'success';
-      status.textContent = 'Message envoye. Merci.';
+      status.textContent = 'Message envoyé. Merci.';
       form.reset();
       return;
     }
@@ -156,11 +157,11 @@ if (form) {
       body: new FormData(form),
       headers: { Accept: 'application/json' }
     })
-      .then(r => r.json())
-      .then(data => {
-        if (data.success === 'Message sent') {
+      .then(response => response.json().then(data => ({ response, data })))
+      .then(({ response, data }) => {
+        if (response.ok && (data.success === true || data.success === 'true' || data.success === 'Message sent')) {
           status.className = 'success';
-          status.textContent = 'Message envoye. Merci pour votre prise de contact.';
+          status.textContent = 'Message envoyé. Merci pour votre prise de contact.';
           form.reset();
           return;
         }
@@ -185,7 +186,7 @@ if (form) {
   if (!content || !visual) return;
 
   // Skip on reduced-motion or small screens
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (prefersReducedMotion) return;
   if (window.innerWidth < 680) return;
 
   let rafId = null;
@@ -212,10 +213,12 @@ if (form) {
     entries.forEach(entry => {
       if (entry.isIntersecting && !enabled) {
         enabled = true;
+        hero.classList.add('parallax-active');
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
       } else if (!entry.isIntersecting && enabled) {
         enabled = false;
+        hero.classList.remove('parallax-active');
         window.removeEventListener('scroll', onScroll);
         if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
         content.style.transform = '';
@@ -226,3 +229,12 @@ if (form) {
 
   enableObserver.observe(hero);
 })();
+
+/* ─── Project filters + back to top ───────────────────────────────── */
+document.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click', () => {
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
+  const f = chip.dataset.filter;
+  document.querySelectorAll('.project-card').forEach(card => { card.hidden = f !== 'all' && card.dataset.cat !== f; });
+}));
+const toTop = document.getElementById('to-top');
+window.addEventListener('scroll', () => toTop && toTop.classList.toggle('show', window.scrollY > 700), { passive: true });
