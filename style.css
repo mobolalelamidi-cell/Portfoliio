@@ -66,13 +66,20 @@ h1{font-size:clamp(2.3rem,5.2vw,4.1rem);font-weight:700;margin-bottom:24px}
 .skill-card p,.project-card p,.goals-grid p{color:var(--muted);font-size:.93rem;margin-bottom:16px}
 .tags,.business-list{display:flex;flex-wrap:wrap;gap:8px}
 .tags span,.business-list span{padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:var(--bg2);font-size:.76rem;font-weight:600;color:var(--muted)}
-.filters{display:flex;gap:10px;margin-bottom:24px}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
 .chip{padding:8px 20px;border-radius:99px;border:1px solid var(--line);background:var(--bg2);color:var(--muted);font:600 .86rem Manrope,sans-serif;cursor:pointer;transition:.25s}
 .chip:hover{color:var(--text)}.chip.active{background:var(--accent);border-color:var(--accent);color:#04120c}
-.projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.projects-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:22px}
 .project-card[hidden]{display:none}
-.project-card.featured{grid-column:span 2;background:linear-gradient(135deg,var(--surface),var(--bg2) 60%,var(--glow))}
-.project-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:34px}.project-top strong{font-size:.8rem;color:var(--muted)}
+.project-card{display:flex;min-width:0;flex-direction:column}
+.project-card.featured{grid-column:auto;background:linear-gradient(145deg,var(--surface),var(--bg2) 62%,var(--glow))}
+.project-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.project-top strong{font-size:.78rem;color:var(--muted);text-align:right}
+.project-card h3{font-size:clamp(1.12rem,1.5vw,1.3rem);overflow-wrap:anywhere}
+.project-card>p{flex:1}
+.project-preview{display:block;overflow:hidden;margin:2px 0 18px;border:1px solid var(--line);border-radius:14px;aspect-ratio:16/9;background:var(--bg2)}
+.project-preview img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.project-preview:hover img{transform:scale(1.03)}
+.project-link{align-self:flex-start;margin-top:18px;padding:11px 20px;font-size:.88rem}
 .business-panel{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:center;padding:36px}
 .business-panel p{color:var(--muted)}.business-list{justify-content:flex-end}
 .goals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -104,6 +111,6 @@ footer{max-width:1160px;margin:auto;padding:30px 24px;border-top:1px solid var(-
 .hero-visual .portrait-card{animation:hero-fade-in .75s both}
 @keyframes hero-enter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes hero-fade-in{from{opacity:0}to{opacity:1}}
-@media(max-width:980px){.hero,.about-grid,.contact-wrapper,.business-panel{grid-template-columns:1fr}.hero{min-height:0}.hero-visual{max-width:380px}.skills-grid{grid-template-columns:repeat(2,1fr)}.projects-grid,.goals-grid{grid-template-columns:repeat(2,1fr)}.business-list{justify-content:flex-start}.projects-heading{flex-direction:column;align-items:flex-start}}
-@media(max-width:680px){nav{display:none}.nav-inner{justify-content:space-between}.metrics{grid-template-columns:1fr 1fr}.metrics div:nth-child(2){border-right:0}.metrics div:nth-child(-n+2){border-bottom:1px solid var(--line)}.skills-grid,.projects-grid,.goals-grid,.form-row{grid-template-columns:1fr}.project-card.featured{grid-column:auto}.section{padding:60px 0}}
+@media(max-width:980px){.hero,.about-grid,.contact-wrapper,.business-panel{grid-template-columns:1fr}.hero{min-height:0}.hero-visual{max-width:380px}.skills-grid{grid-template-columns:repeat(2,1fr)}.projects-grid,.goals-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.business-list{justify-content:flex-start}.projects-heading{flex-direction:column;align-items:flex-start;gap:20px}}
+@media(max-width:680px){nav{display:none}.nav-inner{justify-content:space-between}.metrics{grid-template-columns:1fr 1fr}.metrics div:nth-child(2){border-right:0}.metrics div:nth-child(-n+2){border-bottom:1px solid var(--line)}.skills-grid,.projects-grid,.goals-grid,.form-row{grid-template-columns:1fr}.projects-grid{gap:16px}.project-card{padding:22px}.project-top{margin-bottom:18px}.project-card h3{font-size:1.25rem}.project-preview{aspect-ratio:1.9/1}.section{padding:60px 0}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}html{scroll-behavior:auto;scroll-padding-top:0}}
