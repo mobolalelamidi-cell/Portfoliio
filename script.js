@@ -176,60 +176,6 @@ if (form) {
   });
 }
 
-/* ─── Parallax Hero (performant, transform-only) ─────────────────── */
-(() => {
-  const hero = document.getElementById('hero');
-  if (!hero) return;
-
-  const content = hero.querySelector('.hero-content');
-  const visual = hero.querySelector('.hero-visual .portrait-card');
-  if (!content || !visual) return;
-
-  // Skip on reduced-motion or small screens
-  if (prefersReducedMotion) return;
-  if (window.innerWidth < 680) return;
-
-  let rafId = null;
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-
-  function updateParallax() {
-    rafId = null;
-    const rect = hero.getBoundingClientRect();
-    const viewH = window.innerHeight;
-    // progress: 0 when hero top at viewport bottom, 1 when hero top at viewport top
-    const progress = clamp(1 - rect.top / viewH, -0.2, 1.2);
-    const contentY = (progress - 0.5) * 22;
-    const visualY  = (progress - 0.5) * -28;
-    content.style.transform = `translate3d(0, ${contentY}px, 0)`;
-    visual.style.transform  = `translate3d(0, ${visualY}px, 0)`;
-  }
-
-  function onScroll() {
-    if (rafId == null) rafId = requestAnimationFrame(updateParallax);
-  }
-
-  let enabled = false;
-  const enableObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !enabled) {
-        enabled = true;
-        hero.classList.add('parallax-active');
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
-      } else if (!entry.isIntersecting && enabled) {
-        enabled = false;
-        hero.classList.remove('parallax-active');
-        window.removeEventListener('scroll', onScroll);
-        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-        content.style.transform = '';
-        visual.style.transform  = '';
-      }
-    });
-  }, { threshold: 0.05 });
-
-  enableObserver.observe(hero);
-})();
-
 /* ─── Project filters + back to top ───────────────────────────────── */
 document.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click', () => {
   document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
